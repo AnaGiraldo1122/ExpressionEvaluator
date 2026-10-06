@@ -2,31 +2,33 @@
 using Backend;
 
 namespace Frontend.Windows
-
 {
     public partial class Form1 : Form
     {
         Label pantalla = new Label();
         bool resultadoMostrado = false;
+
         public Form1()
         {
             InitializeComponent();
             CrearCalculadora();
-
         }
+
         private void CrearCalculadora()
         {
-            Text = "Funciones Evaluator";
-            ClientSize = new Size(400, 310);
+            Text = "Functions Evaluator";
+            ClientSize = new Size(580, 430);
             BackColor = Color.Black;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
+
             pantalla.Location = new Point(10, 10);
+            pantalla.Size = new Size(560, 100);
             pantalla.BackColor = Color.Green;
             pantalla.ForeColor = Color.White;
-            pantalla.Font = new Font("Arial", 18);
+            pantalla.Font = new Font("Arial", 22);
             pantalla.TextAlign = ContentAlignment.MiddleLeft;
-            pantalla.Size = new Size(380, 50);
+            pantalla.TextChanged += Pantalla_TextChanged;
             Controls.Add(pantalla);
 
             Color blanco = Color.White;
@@ -58,40 +60,60 @@ namespace Frontend.Windows
             CrearBoton("=", 3, 3, 4, naranja);
         }
 
+        private void Pantalla_TextChanged(object? sender, EventArgs e)
+        {
+            int largo = pantalla.Text.Length;
+
+            if (largo <= 25)
+            {
+                pantalla.Font = new Font("Arial", 22);
+            }
+            else if (largo <= 50)
+            {
+                pantalla.Font = new Font("Arial", 16);
+            }
+            else
+            {
+                pantalla.Font = new Font("Arial", 12);
+            }
+        }
+
+       
         private void CrearBoton(string texto, int columna, int fila, int ancho, Color color)
         {
             Button boton = new Button();
             boton.Text = texto;
-            boton.Size = new Size(ancho * 55 - 5, 50);
-            boton.Location = new Point(10 + columna * 55, 80 + fila * 55);
+            boton.Size = new Size(ancho * 80 - 5, 70);
+            boton.Location = new Point(10 + columna * 80, 120 + fila * 75);
             boton.BackColor = color;
             boton.FlatStyle = FlatStyle.Flat;
-            boton.Font = new Font("Arial", 14);
+            boton.Font = new Font("Arial", 18);
             boton.Click += Boton_Click;
             Controls.Add(boton);
         }
+
         private void Boton_Click(object? sender, EventArgs e)
         {
             Button boton = (Button)sender!;
             string tecla = boton.Text;
 
+           
             if (resultadoMostrado && tecla != "=")
             {
                 pantalla.Text = "";
                 resultadoMostrado = false;
-
             }
+
             if (tecla == "Clear")
             {
                 pantalla.Text = "";
             }
-            else if (tecla=="Delete")
+            else if (tecla == "Delete")
             {
-              if (pantalla.Text.Length > 0)
+                if (pantalla.Text.Length > 0)
                 {
                     pantalla.Text = pantalla.Text.Substring(0, pantalla.Text.Length - 1);
                 }
-                
             }
             else if (tecla == "=")
             {
@@ -110,11 +132,11 @@ namespace Frontend.Windows
         {
             string expresion = pantalla.Text;
 
-
-            if (expresion== "")
+            if (expresion == "")
             {
                 return;
             }
+
             try
             {
                 double resultado = ExpressionEvaluator.Evalute(expresion);
